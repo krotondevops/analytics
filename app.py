@@ -1209,7 +1209,7 @@ def tab_clientes(df):
         cli_garant = cli_garant[cli_garant["Total"] >= 5].sort_values("Tasa", ascending=False).head(15)
         cli_garant["Tasa"] = cli_garant["Tasa"].round(1)
         cli_garant.columns = ["Cliente", "Total Atenciones", "Garant\u00edas", "% Garant\u00eda"]
-        cli_garant["% Garantia"] = cli_garant["% Garantia"].apply(lambda x: f"{x}%")
+        cli_garant["% Garant\u00eda"] = cli_garant["% Garant\u00eda"].apply(lambda x: f"{x}%")
         st.dataframe(cli_garant, use_container_width=True, hide_index=True)
 
     st.markdown(render_insight(
