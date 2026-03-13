@@ -593,7 +593,7 @@ def tab_dashboard_general(df):
         mes_data = mes_data.sort_values("MES_ORDEN")
         fig_mes = px.bar(mes_data, x="MES", y="Atenciones", title="Atenciones por Mes",
                          color_discrete_sequence=[COLORS["navy"]], text="Atenciones")
-        fig_mes.update_traces(textposition="outside")
+        fig_mes.update_traces(textposition="outside", cliponaxis=False)
         fig_mes.update_layout(**PLOTLY_LAYOUT, xaxis_title="", yaxis_title="Cantidad", margin=dict(t=40, b=20))
         st.plotly_chart(fig_mes, use_container_width=True)
 
@@ -620,8 +620,8 @@ def tab_dashboard_general(df):
         fig_tipo = px.bar(tipo_data, x="Cantidad", y="Tipo", orientation="h", title="Remoto vs Presencial",
                           color="Tipo", color_discrete_map={"REMOTO": COLORS["navy"], "PRESENCIAL": COLORS["purple"]},
                           text="Cantidad")
-        fig_tipo.update_traces(textposition="outside")
-        fig_tipo.update_layout(**PLOTLY_LAYOUT, showlegend=False, margin=dict(t=40, b=20), xaxis_title="", yaxis_title="")
+        fig_tipo.update_traces(textposition="outside", cliponaxis=False)
+        fig_tipo.update_layout(**PLOTLY_LAYOUT, showlegend=False, margin=dict(t=40, b=20, r=70), xaxis_title="", yaxis_title="")
         st.plotly_chart(fig_tipo, use_container_width=True)
 
     with col4:
@@ -629,9 +629,9 @@ def tab_dashboard_general(df):
         motivo_data.columns = ["Motivo", "Cantidad"]
         fig_motivo = px.bar(motivo_data, x="Cantidad", y="Motivo", orientation="h", title="Distribuci\u00f3n por Motivo",
                             color_discrete_sequence=[COLORS["cyan"]], text="Cantidad")
-        fig_motivo.update_traces(textposition="outside")
+        fig_motivo.update_traces(textposition="outside", cliponaxis=False)
         fig_motivo.update_layout(**PLOTLY_LAYOUT, yaxis=dict(autorange="reversed"),
-                                 margin=dict(t=40, b=20), xaxis_title="", yaxis_title="")
+                                 margin=dict(t=40, b=20, r=70), xaxis_title="", yaxis_title="")
         st.plotly_chart(fig_motivo, use_container_width=True)
 
 
@@ -675,8 +675,8 @@ def tab_analisis_tecnico(df):
         modelo_data.columns = ["Modelo", "Atenciones"]
         fig_modelos = px.bar(modelo_data, x="Atenciones", y="Modelo", orientation="h",
                              color_discrete_sequence=[COLORS["navy"]], text="Atenciones")
-        fig_modelos.update_traces(textposition="outside")
-        fig_modelos.update_layout(**PLOTLY_LAYOUT, yaxis=dict(autorange="reversed"), height=550, margin=dict(t=20, b=20), xaxis_title="", yaxis_title="")
+        fig_modelos.update_traces(textposition="outside", cliponaxis=False)
+        fig_modelos.update_layout(**PLOTLY_LAYOUT, yaxis=dict(autorange="reversed"), height=550, margin=dict(t=20, b=20, r=70), xaxis_title="", yaxis_title="")
         st.plotly_chart(fig_modelos, use_container_width=True)
 
     with col2:
@@ -724,7 +724,7 @@ def tab_analisis_tecnico(df):
                 fig_garant = px.bar(garantia_por_marca, x="MARCA", y="Tasa_Garantia",
                                     color="Tasa_Garantia", color_continuous_scale=["#059669", "#D97706", "#DC2626"],
                                     text=garantia_por_marca["Tasa_Garantia"].apply(lambda x: f"{x:.1f}%"))
-                fig_garant.update_traces(textposition="outside")
+                fig_garant.update_traces(textposition="outside", cliponaxis=False)
                 fig_garant.update_layout(**PLOTLY_LAYOUT, xaxis_title="", yaxis_title="% Garant\u00eda", margin=dict(t=20, b=20), height=350, showlegend=False)
                 st.plotly_chart(fig_garant, use_container_width=True)
             with col_g2:
@@ -836,8 +836,8 @@ def tab_analisis_ejecutivo(df):
         vendedor_data.columns = ["Vendedor", "Atenciones"]
         fig_vendedor = px.bar(vendedor_data, x="Atenciones", y="Vendedor", orientation="h",
                               color_discrete_sequence=[COLORS["navy"]], text="Atenciones")
-        fig_vendedor.update_traces(textposition="outside")
-        fig_vendedor.update_layout(**PLOTLY_LAYOUT, yaxis=dict(autorange="reversed"), height=450, margin=dict(t=20, b=20), xaxis_title="", yaxis_title="")
+        fig_vendedor.update_traces(textposition="outside", cliponaxis=False)
+        fig_vendedor.update_layout(**PLOTLY_LAYOUT, yaxis=dict(autorange="reversed"), height=450, margin=dict(t=20, b=20, r=70), xaxis_title="", yaxis_title="")
         st.plotly_chart(fig_vendedor, use_container_width=True)
 
     with col2:
@@ -846,8 +846,8 @@ def tab_analisis_ejecutivo(df):
         cliente_data.columns = ["Cliente", "Atenciones"]
         fig_clientes = px.bar(cliente_data, x="Atenciones", y="Cliente", orientation="h",
                               color_discrete_sequence=[COLORS["purple"]], text="Atenciones")
-        fig_clientes.update_traces(textposition="outside")
-        fig_clientes.update_layout(**PLOTLY_LAYOUT, yaxis=dict(autorange="reversed"), height=450, margin=dict(t=20, b=20), xaxis_title="", yaxis_title="")
+        fig_clientes.update_traces(textposition="outside", cliponaxis=False)
+        fig_clientes.update_layout(**PLOTLY_LAYOUT, yaxis=dict(autorange="reversed"), height=450, margin=dict(t=20, b=20, r=70), xaxis_title="", yaxis_title="")
         st.plotly_chart(fig_clientes, use_container_width=True)
 
     col3, col4 = st.columns(2)
@@ -857,7 +857,7 @@ def tab_analisis_ejecutivo(df):
         canal_data.columns = ["Canal", "Atenciones"]
         fig_canal = px.bar(canal_data, x="Canal", y="Atenciones", color="Canal",
                            color_discrete_sequence=COLOR_SEQUENCE, text="Atenciones")
-        fig_canal.update_traces(textposition="outside")
+        fig_canal.update_traces(textposition="outside", cliponaxis=False)
         fig_canal.update_layout(**PLOTLY_LAYOUT, showlegend=False, height=400, margin=dict(t=20, b=20), xaxis_title="", yaxis_title="")
         st.plotly_chart(fig_canal, use_container_width=True)
 
@@ -868,7 +868,7 @@ def tab_analisis_ejecutivo(df):
         fig_evol = px.bar(evol_data, x="MES", y="Cantidad", color="MOTIVO", barmode="group",
                           color_discrete_sequence=COLOR_SEQUENCE,
                           text="Cantidad")
-        fig_evol.update_traces(textposition="outside", textfont_size=10)
+        fig_evol.update_traces(textposition="outside", textfont_size=10, cliponaxis=False)
         fig_evol.update_layout(**PLOTLY_LAYOUT, height=420, margin=dict(t=20, b=20), xaxis_title="", yaxis_title="Atenciones",
                                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
                                bargap=0.15, bargroupgap=0.05)
@@ -974,7 +974,7 @@ def tab_productividad(df):
         tec_mes = tec_mes.sort_values("MES_ORDEN")
         fig_tec_mes = px.bar(tec_mes, x="MES", y="Atenciones", color="TECNICO", barmode="group",
                              color_discrete_sequence=COLOR_SEQUENCE, text="Atenciones")
-        fig_tec_mes.update_traces(textposition="outside")
+        fig_tec_mes.update_traces(textposition="outside", cliponaxis=False)
         fig_tec_mes.update_layout(**PLOTLY_LAYOUT, xaxis_title="", yaxis_title="Atenciones", height=420, margin=dict(t=20, b=20),
                                   legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
         st.plotly_chart(fig_tec_mes, use_container_width=True)
@@ -1065,8 +1065,8 @@ def tab_marcas_productos(df):
         marca_data["Label"] = marca_data.apply(lambda r: f"{r['Atenciones']} ({r['Porcentaje']}%)", axis=1)
         fig_marca_bar = px.bar(marca_data, x="Atenciones", y="Marca", orientation="h",
                                color_discrete_sequence=[COLORS["navy"]], text="Label")
-        fig_marca_bar.update_traces(textposition="outside")
-        fig_marca_bar.update_layout(**PLOTLY_LAYOUT, yaxis=dict(autorange="reversed"), height=420, margin=dict(t=20, b=20, r=80), xaxis_title="", yaxis_title="")
+        fig_marca_bar.update_traces(textposition="outside", cliponaxis=False)
+        fig_marca_bar.update_layout(**PLOTLY_LAYOUT, yaxis=dict(autorange="reversed"), height=420, margin=dict(t=20, b=20, r=100), xaxis_title="", yaxis_title="")
         st.plotly_chart(fig_marca_bar, use_container_width=True)
 
     with col2:
@@ -1075,8 +1075,8 @@ def tab_marcas_productos(df):
         modelo_data.columns = ["Modelo", "Atenciones"]
         fig_top_mod = px.bar(modelo_data, x="Atenciones", y="Modelo", orientation="h",
                              color_discrete_sequence=[COLORS["purple"]], text="Atenciones")
-        fig_top_mod.update_traces(textposition="outside")
-        fig_top_mod.update_layout(**PLOTLY_LAYOUT, yaxis=dict(autorange="reversed"), height=420, margin=dict(t=20, b=20), xaxis_title="", yaxis_title="")
+        fig_top_mod.update_traces(textposition="outside", cliponaxis=False)
+        fig_top_mod.update_layout(**PLOTLY_LAYOUT, yaxis=dict(autorange="reversed"), height=420, margin=dict(t=20, b=20, r=70), xaxis_title="", yaxis_title="")
         st.plotly_chart(fig_top_mod, use_container_width=True)
 
     # Heatmap marca vs motivo
@@ -1141,8 +1141,8 @@ def tab_clientes(df):
         top_cli.columns = ["Cliente", "Atenciones"]
         fig_cli = px.bar(top_cli, x="Atenciones", y="Cliente", orientation="h",
                          color_discrete_sequence=[COLORS["navy"]], text="Atenciones")
-        fig_cli.update_traces(textposition="outside")
-        fig_cli.update_layout(**PLOTLY_LAYOUT, yaxis=dict(autorange="reversed"), height=550, margin=dict(t=20, b=20), xaxis_title="", yaxis_title="")
+        fig_cli.update_traces(textposition="outside", cliponaxis=False)
+        fig_cli.update_layout(**PLOTLY_LAYOUT, yaxis=dict(autorange="reversed"), height=550, margin=dict(t=20, b=20, r=70), xaxis_title="", yaxis_title="")
         st.plotly_chart(fig_cli, use_container_width=True)
 
     with col2:
@@ -1151,8 +1151,8 @@ def tab_clientes(df):
         canal_cli.columns = ["Canal", "Atenciones"]
         fig_canal_cli = px.bar(canal_cli, x="Atenciones", y="Canal", orientation="h",
                                color="Canal", color_discrete_sequence=COLOR_SEQUENCE, text="Atenciones")
-        fig_canal_cli.update_traces(textposition="outside")
-        fig_canal_cli.update_layout(**PLOTLY_LAYOUT, showlegend=False, height=350, margin=dict(t=20, b=20), xaxis_title="", yaxis_title="")
+        fig_canal_cli.update_traces(textposition="outside", cliponaxis=False)
+        fig_canal_cli.update_layout(**PLOTLY_LAYOUT, showlegend=False, height=350, margin=dict(t=20, b=20, r=70), xaxis_title="", yaxis_title="")
         st.plotly_chart(fig_canal_cli, use_container_width=True)
 
         st.markdown('<div class="section-title">Clientes \u00danicos por Canal</div>', unsafe_allow_html=True)
@@ -1308,7 +1308,7 @@ def tab_indicadores_kpi(df):
         col_g1, col_g2 = st.columns(2)
         with col_g1:
             fig_growth = px.bar(mes_growth, x="MES", y="Atenciones", color_discrete_sequence=[COLORS["navy"]], text="Atenciones")
-            fig_growth.update_traces(textposition="outside")
+            fig_growth.update_traces(textposition="outside", cliponaxis=False)
             fig_growth.update_layout(**PLOTLY_LAYOUT, xaxis_title="", yaxis_title="Atenciones", height=350, margin=dict(t=20, b=20))
             st.plotly_chart(fig_growth, use_container_width=True)
 
@@ -1316,7 +1316,7 @@ def tab_indicadores_kpi(df):
             fig_pct = px.bar(mes_growth[mes_growth["MES_ORDEN"] > 1], x="MES", y="Crecimiento",
                              color="Crecimiento", color_continuous_scale=["#DC2626", "#D97706", "#059669"],
                              text=mes_growth[mes_growth["MES_ORDEN"] > 1]["Crecimiento"].apply(lambda x: f"{x:+.1f}%"))
-            fig_pct.update_traces(textposition="outside")
+            fig_pct.update_traces(textposition="outside", cliponaxis=False)
             fig_pct.update_layout(**PLOTLY_LAYOUT, xaxis_title="", yaxis_title="% Crecimiento", height=350, margin=dict(t=20, b=20), showlegend=False)
             st.plotly_chart(fig_pct, use_container_width=True)
 
