@@ -656,7 +656,7 @@ def tab_dashboard_general(df):
 # TAB 2: ANALISIS TECNICO
 # ============================================================
 def tab_analisis_tecnico(df):
-    st.markdown('<div class="main-header"><h1>An\u00e1lisis T\u00e9cnico</h1><p>Evaluaci\u00f3n pericial detallada de las operaciones de soporte t\u00e9cnico</p></div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-header"><h1>An\u00e1lisis de Soporte</h1><p>Evaluaci\u00f3n pericial detallada de las operaciones de soporte t\u00e9cnico</p></div>', unsafe_allow_html=True)
 
     st.markdown(section_header("Mapa de Calor: Atenciones por D\u00eda y Hora", "Concentraci\u00f3n de atenciones seg\u00fan d\u00eda de la semana y hora del d\u00eda"), unsafe_allow_html=True)
 
@@ -1429,7 +1429,7 @@ def main():
         "Marcas y Productos",
         "Clientes",
         "Indicadores KPI",
-        "An\u00e1lisis T\u00e9cnico"
+        "An\u00e1lisis de Soporte"
     ])
 
     with tab1:
