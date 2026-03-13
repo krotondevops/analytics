@@ -606,49 +606,53 @@ def tab_dashboard_general(df):
     col1, col2 = st.columns(2)
 
     with col1:
+        st.markdown(section_header("Atenciones por Mes", "Total de atenciones registradas en cada mes del periodo"), unsafe_allow_html=True)
         mes_data = df.groupby(["MES", "MES_ORDEN"]).size().reset_index(name="Atenciones")
         mes_data = mes_data.sort_values("MES_ORDEN")
-        fig_mes = px.bar(mes_data, x="MES", y="Atenciones", title="Atenciones por Mes",
+        fig_mes = px.bar(mes_data, x="MES", y="Atenciones",
                          color_discrete_sequence=[COLORS["navy"]], text="Atenciones")
         fig_mes.update_traces(textposition="outside", cliponaxis=False)
-        fig_mes.update_layout(**PLOTLY_LAYOUT, xaxis_title="", yaxis_title="Cantidad", margin=dict(t=40, b=20))
+        fig_mes.update_layout(**PLOTLY_LAYOUT, xaxis_title="", yaxis_title="Cantidad", margin=dict(t=20, b=20))
         st.plotly_chart(fig_mes, use_container_width=True)
 
     with col2:
+        st.markdown(section_header("Tendencia Semanal de Atenciones", "Evoluci\u00f3n semanal del volumen de atenciones con suavizado"), unsafe_allow_html=True)
         semana_data = df.copy()
         semana_data["SEMANA_INICIO"] = semana_data["FECHA"] - pd.to_timedelta(semana_data["FECHA"].dt.dayofweek, unit="D")
         semana_data = semana_data.groupby("SEMANA_INICIO").size().reset_index(name="Atenciones")
         semana_data = semana_data.sort_values("SEMANA_INICIO")
         semana_data["Semana"] = range(1, len(semana_data) + 1)
         semana_data["Etiqueta"] = "Sem " + semana_data["Semana"].astype(str)
-        fig_semana = px.line(semana_data, x="Etiqueta", y="Atenciones", title="Tendencia Semanal de Atenciones",
+        fig_semana = px.line(semana_data, x="Etiqueta", y="Atenciones",
                              markers=True, color_discrete_sequence=[COLORS["purple"]],
                              custom_data=["SEMANA_INICIO"])
         fig_semana.update_traces(line_shape="spline", line=dict(width=2.5),
                                  hovertemplate="<b>%{x}</b><br>Inicio: %{customdata[0]|%d %b %Y}<br>Atenciones: %{y}<extra></extra>")
-        fig_semana.update_layout(**PLOTLY_LAYOUT, xaxis_title="", yaxis_title="Cantidad", margin=dict(t=40, b=20))
+        fig_semana.update_layout(**PLOTLY_LAYOUT, xaxis_title="", yaxis_title="Cantidad", margin=dict(t=20, b=20))
         st.plotly_chart(fig_semana, use_container_width=True)
 
     col3, col4 = st.columns(2)
 
     with col3:
+        st.markdown(section_header("Remoto vs Presencial", "Comparaci\u00f3n entre atenciones remotas y presenciales"), unsafe_allow_html=True)
         tipo_data = df[df["TIPO DE ATENCION"] != ""]["TIPO DE ATENCION"].value_counts().reset_index()
         tipo_data.columns = ["Tipo", "Cantidad"]
-        fig_tipo = px.bar(tipo_data, x="Cantidad", y="Tipo", orientation="h", title="Remoto vs Presencial",
+        fig_tipo = px.bar(tipo_data, x="Cantidad", y="Tipo", orientation="h",
                           color="Tipo", color_discrete_map={"REMOTO": COLORS["navy"], "PRESENCIAL": COLORS["purple"]},
                           text="Cantidad")
         fig_tipo.update_traces(textposition="outside", cliponaxis=False)
-        fig_tipo.update_layout(**PLOTLY_LAYOUT, showlegend=False, margin=dict(t=40, b=20, r=70), xaxis_title="", yaxis_title="")
+        fig_tipo.update_layout(**PLOTLY_LAYOUT, showlegend=False, margin=dict(t=20, b=20, r=70), xaxis_title="", yaxis_title="")
         st.plotly_chart(fig_tipo, use_container_width=True)
 
     with col4:
+        st.markdown(section_header("Distribuci\u00f3n por Motivo", "Cantidad de atenciones por cada tipo de motivo"), unsafe_allow_html=True)
         motivo_data = df[df["MOTIVO"] != ""]["MOTIVO"].value_counts().reset_index()
         motivo_data.columns = ["Motivo", "Cantidad"]
-        fig_motivo = px.bar(motivo_data, x="Cantidad", y="Motivo", orientation="h", title="Distribuci\u00f3n por Motivo",
+        fig_motivo = px.bar(motivo_data, x="Cantidad", y="Motivo", orientation="h",
                             color_discrete_sequence=[COLORS["cyan"]], text="Cantidad")
         fig_motivo.update_traces(textposition="outside", cliponaxis=False)
         fig_motivo.update_layout(**PLOTLY_LAYOUT, yaxis=dict(autorange="reversed"),
-                                 margin=dict(t=40, b=20, r=70), xaxis_title="", yaxis_title="")
+                                 margin=dict(t=20, b=20, r=70), xaxis_title="", yaxis_title="")
         st.plotly_chart(fig_motivo, use_container_width=True)
 
 
