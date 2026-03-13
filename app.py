@@ -76,26 +76,29 @@ html, body, [class*="css"] {
 
 .main-header {
     background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 50%, var(--purple) 100%);
-    padding: 1.8rem 2.2rem;
-    border-radius: 14px;
-    margin-bottom: 1.8rem;
+    padding: 1.2rem 2rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
     color: white;
     box-shadow: 0 4px 24px rgba(37, 99, 235, 0.25);
     animation: fadeInUp 0.6s ease-out;
+    position: sticky;
+    top: 0;
+    z-index: 999;
 }
 
 .main-header h1 {
     color: white !important;
     font-weight: 800;
-    font-size: 1.7rem;
+    font-size: 1.4rem;
     margin: 0;
     letter-spacing: -0.02em;
 }
 
 .main-header p {
     color: rgba(255,255,255,0.8);
-    font-size: 0.9rem;
-    margin: 0.4rem 0 0 0;
+    font-size: 0.82rem;
+    margin: 0.3rem 0 0 0;
     font-weight: 400;
 }
 
