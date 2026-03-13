@@ -212,6 +212,19 @@ html, body, [class*="css"] {
     line-height: 1.4;
 }
 
+.section-unit {
+    display: inline-block;
+    background: var(--blue-50);
+    color: var(--blue);
+    font-weight: 600;
+    font-size: 0.68rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 4px;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+    letter-spacing: 0.02em;
+}
+
 section[data-testid="stSidebar"] {
     background: var(--white);
     border-right: 1px solid var(--slate-100);
@@ -326,10 +339,15 @@ PLOTLY_LAYOUT = dict(
 )
 
 
-def section_header(title, desc=""):
+def section_header(title, desc="", unit=""):
     html = f'<div class="section-title">{title}</div>'
-    if desc:
-        html += f'<div class="section-desc">{desc}</div>'
+    if desc or unit:
+        parts = []
+        if desc:
+            parts.append(desc)
+        if unit:
+            parts.append(f'<span class="section-unit">Unidad: {unit}</span>')
+        html += f'<div class="section-desc">{" ".join(parts)}</div>'
     return html
 
 
@@ -606,7 +624,7 @@ def tab_dashboard_general(df):
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown(section_header("Atenciones por Mes", "Total de atenciones registradas en cada mes del periodo"), unsafe_allow_html=True)
+        st.markdown(section_header("Atenciones por Mes", "Total de atenciones registradas en cada mes del periodo", "atenciones"), unsafe_allow_html=True)
         mes_data = df.groupby(["MES", "MES_ORDEN"]).size().reset_index(name="Atenciones")
         mes_data = mes_data.sort_values("MES_ORDEN")
         fig_mes = px.bar(mes_data, x="MES", y="Atenciones",
@@ -616,7 +634,7 @@ def tab_dashboard_general(df):
         st.plotly_chart(fig_mes, use_container_width=True)
 
     with col2:
-        st.markdown(section_header("Tendencia Semanal de Atenciones", "Evoluci\u00f3n semanal del volumen de atenciones con suavizado"), unsafe_allow_html=True)
+        st.markdown(section_header("Tendencia Semanal de Atenciones", "Evoluci\u00f3n semanal del volumen de atenciones con suavizado", "atenciones"), unsafe_allow_html=True)
         semana_data = df.copy()
         semana_data["SEMANA_INICIO"] = semana_data["FECHA"] - pd.to_timedelta(semana_data["FECHA"].dt.dayofweek, unit="D")
         semana_data = semana_data.groupby("SEMANA_INICIO").size().reset_index(name="Atenciones")
@@ -634,7 +652,7 @@ def tab_dashboard_general(df):
     col3, col4 = st.columns(2)
 
     with col3:
-        st.markdown(section_header("Remoto vs Presencial", "Comparaci\u00f3n entre atenciones remotas y presenciales"), unsafe_allow_html=True)
+        st.markdown(section_header("Remoto vs Presencial", "Comparaci\u00f3n entre atenciones remotas y presenciales", "atenciones"), unsafe_allow_html=True)
         tipo_data = df[df["TIPO DE ATENCION"] != ""]["TIPO DE ATENCION"].value_counts().reset_index()
         tipo_data.columns = ["Tipo", "Cantidad"]
         fig_tipo = px.bar(tipo_data, x="Cantidad", y="Tipo", orientation="h",
@@ -645,7 +663,7 @@ def tab_dashboard_general(df):
         st.plotly_chart(fig_tipo, use_container_width=True)
 
     with col4:
-        st.markdown(section_header("Distribuci\u00f3n por Motivo", "Cantidad de atenciones por cada tipo de motivo"), unsafe_allow_html=True)
+        st.markdown(section_header("Distribuci\u00f3n por Motivo", "Cantidad de atenciones por cada tipo de motivo", "atenciones"), unsafe_allow_html=True)
         motivo_data = df[df["MOTIVO"] != ""]["MOTIVO"].value_counts().reset_index()
         motivo_data.columns = ["Motivo", "Cantidad"]
         fig_motivo = px.bar(motivo_data, x="Cantidad", y="Motivo", orientation="h",
@@ -662,7 +680,7 @@ def tab_dashboard_general(df):
 def tab_analisis_tecnico(df):
     st.markdown('<div class="main-header"><h1>An\u00e1lisis de Soporte</h1><p>Evaluaci\u00f3n pericial detallada de las operaciones de soporte t\u00e9cnico</p></div>', unsafe_allow_html=True)
 
-    st.markdown(section_header("Mapa de Calor: Atenciones por D\u00eda y Hora", "Concentraci\u00f3n de atenciones seg\u00fan d\u00eda de la semana y hora del d\u00eda"), unsafe_allow_html=True)
+    st.markdown(section_header("Mapa de Calor: Atenciones por D\u00eda y Hora", "Concentraci\u00f3n de atenciones seg\u00fan d\u00eda de la semana y hora del d\u00eda", "atenciones"), unsafe_allow_html=True)
 
     df_heatmap = df[df["HORA_INICIO"].notna()].copy()
     if len(df_heatmap) > 0:
@@ -691,7 +709,7 @@ def tab_analisis_tecnico(df):
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown(section_header("Top 20 Modelos m\u00e1s Atendidos", "Modelos de equipo con mayor cantidad de atenciones registradas"), unsafe_allow_html=True)
+        st.markdown(section_header("Top 20 Modelos m\u00e1s Atendidos", "Modelos de equipo con mayor cantidad de atenciones registradas", "atenciones"), unsafe_allow_html=True)
         modelo_data = df[df["MODELO"] != ""]["MODELO"].value_counts().head(20).reset_index()
         modelo_data.columns = ["Modelo", "Atenciones"]
         fig_modelos = px.bar(modelo_data, x="Atenciones", y="Modelo", orientation="h",
@@ -701,7 +719,7 @@ def tab_analisis_tecnico(df):
         st.plotly_chart(fig_modelos, use_container_width=True)
 
     with col2:
-        st.markdown(section_header("Distribuci\u00f3n del Tiempo de Atenci\u00f3n", "Frecuencia de atenciones seg\u00fan su duraci\u00f3n en minutos"), unsafe_allow_html=True)
+        st.markdown(section_header("Distribuci\u00f3n del Tiempo de Atenci\u00f3n", "Frecuencia de atenciones seg\u00fan su duraci\u00f3n en minutos", "minutos"), unsafe_allow_html=True)
         df_tiempo = df[df["MINUTOS_ATENCION"] > 0]
         if len(df_tiempo) > 0:
             fig_hist = px.histogram(df_tiempo, x="MINUTOS_ATENCION", nbins=30,
@@ -712,7 +730,7 @@ def tab_analisis_tecnico(df):
     st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
 
     # Motivo por marca
-    st.markdown(section_header("Motivo de Atenci\u00f3n por Marca", "Composici\u00f3n de motivos para las 10 marcas m\u00e1s atendidas"), unsafe_allow_html=True)
+    st.markdown(section_header("Motivo de Atenci\u00f3n por Marca", "Composici\u00f3n de motivos para las 10 marcas m\u00e1s atendidas", "atenciones"), unsafe_allow_html=True)
     df_marca_motivo = df[(df["MARCA"] != "") & (df["MOTIVO"] != "")]
     if len(df_marca_motivo) > 0:
         marca_motivo = df_marca_motivo.groupby(["MARCA", "MOTIVO"]).size().reset_index(name="Cantidad")
@@ -727,7 +745,7 @@ def tab_analisis_tecnico(df):
     st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
 
     # Tasa de garantia por marca
-    st.markdown(section_header("Tasa de Garant\u00eda por Marca", "Porcentaje de atenciones por garant\u00eda en marcas con m\u00e1s de 10 casos"), unsafe_allow_html=True)
+    st.markdown(section_header("Tasa de Garant\u00eda por Marca", "Porcentaje de atenciones por garant\u00eda en marcas con m\u00e1s de 10 casos", "porcentaje (%)"), unsafe_allow_html=True)
     df_marcas_valid = df[df["MARCA"] != ""]
     if len(df_marcas_valid) > 0:
         garantia_por_marca = df_marcas_valid.groupby("MARCA").apply(
@@ -756,7 +774,7 @@ def tab_analisis_tecnico(df):
                 st.dataframe(display_df, use_container_width=True, hide_index=True)
 
     # Top 10 modelos con mayor tiempo acumulado
-    st.markdown(section_header("Top 10 Modelos con Mayor Tiempo Acumulado", "Modelos que han consumido más horas-técnico en total"), unsafe_allow_html=True)
+    st.markdown(section_header("Top 10 Modelos con Mayor Tiempo Acumulado", "Modelos que han consumido m\u00e1s horas-t\u00e9cnico en total", "minutos / horas"), unsafe_allow_html=True)
     df_modelo_tiempo = df[(df["MODELO"] != "") & (df["MINUTOS_ATENCION"] > 0)]
     if len(df_modelo_tiempo) > 0:
         modelo_tiempo = df_modelo_tiempo.groupby("MODELO").agg(
@@ -852,7 +870,7 @@ def tab_analisis_ejecutivo(df):
 
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown(section_header("Rendimiento por Vendedor", "Atenciones técnicas generadas por cada vendedor comercial"), unsafe_allow_html=True)
+        st.markdown(section_header("Rendimiento por Vendedor", "Atenciones t\u00e9cnicas generadas por cada vendedor comercial", "atenciones"), unsafe_allow_html=True)
         vendedor_data = df[df["VENDEDOR"] != ""]["VENDEDOR"].value_counts().head(15).reset_index()
         vendedor_data.columns = ["Vendedor", "Atenciones"]
         fig_vendedor = px.bar(vendedor_data, x="Atenciones", y="Vendedor", orientation="h",
@@ -862,7 +880,7 @@ def tab_analisis_ejecutivo(df):
         st.plotly_chart(fig_vendedor, use_container_width=True)
 
     with col2:
-        st.markdown(section_header("Top 15 Clientes por Atenciones", "Clientes con mayor volumen de solicitudes de soporte técnico"), unsafe_allow_html=True)
+        st.markdown(section_header("Top 15 Clientes por Atenciones", "Clientes con mayor volumen de solicitudes de soporte t\u00e9cnico", "atenciones"), unsafe_allow_html=True)
         cliente_data = df[df["CLIENTE"] != ""]["CLIENTE"].value_counts().head(15).reset_index()
         cliente_data.columns = ["Cliente", "Atenciones"]
         fig_clientes = px.bar(cliente_data, x="Atenciones", y="Cliente", orientation="h",
@@ -873,7 +891,7 @@ def tab_analisis_ejecutivo(df):
 
     col3, col4 = st.columns(2)
     with col3:
-        st.markdown(section_header("Distribuci\u00f3n por Canal", "Volumen de atenciones seg\u00fan el canal comercial"), unsafe_allow_html=True)
+        st.markdown(section_header("Distribuci\u00f3n por Canal", "Volumen de atenciones seg\u00fan el canal comercial", "atenciones"), unsafe_allow_html=True)
         canal_data = df[df["CANAL"] != ""]["CANAL"].value_counts().reset_index()
         canal_data.columns = ["Canal", "Atenciones"]
         fig_canal = px.bar(canal_data, x="Canal", y="Atenciones", color="Canal",
@@ -883,7 +901,7 @@ def tab_analisis_ejecutivo(df):
         st.plotly_chart(fig_canal, use_container_width=True)
 
     with col4:
-        st.markdown(section_header("Evoluci\u00f3n Mensual por Motivo", "Comparaci\u00f3n mensual del volumen por cada tipo de motivo"), unsafe_allow_html=True)
+        st.markdown(section_header("Evoluci\u00f3n Mensual por Motivo", "Comparaci\u00f3n mensual del volumen por cada tipo de motivo", "atenciones"), unsafe_allow_html=True)
         evol_data = df[(df["MOTIVO"] != "") & (df["MES"] != "")].groupby(["MES", "MES_ORDEN", "MOTIVO"]).size().reset_index(name="Cantidad")
         evol_data = evol_data.sort_values("MES_ORDEN")
         fig_evol = px.bar(evol_data, x="MES", y="Cantidad", color="MOTIVO", barmode="group",
@@ -896,7 +914,7 @@ def tab_analisis_ejecutivo(df):
         st.plotly_chart(fig_evol, use_container_width=True)
 
     # Treemap
-    st.markdown(section_header("Mapa de Clientes por Canal", "Distribución jerárquica de clientes agrupados por canal comercial"), unsafe_allow_html=True)
+    st.markdown(section_header("Mapa de Clientes por Canal", "Distribuci\u00f3n jer\u00e1rquica de clientes agrupados por canal comercial", "atenciones"), unsafe_allow_html=True)
     df_tree = df[(df["CLIENTE"] != "") & (df["CANAL"] != "")]
     if len(df_tree) > 0:
         tree_data = df_tree.groupby(["CANAL", "CLIENTE"]).size().reset_index(name="Atenciones")
@@ -990,7 +1008,7 @@ def tab_productividad(df):
 
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown(section_header("Atenciones por T\u00e9cnico por Mes", "Volumen mensual de atenciones por cada t\u00e9cnico"), unsafe_allow_html=True)
+        st.markdown(section_header("Atenciones por T\u00e9cnico por Mes", "Volumen mensual de atenciones por cada t\u00e9cnico", "atenciones"), unsafe_allow_html=True)
         tec_mes = df[(df["TECNICO"] != "") & (df["MES"] != "")].groupby(["TECNICO", "MES", "MES_ORDEN"]).size().reset_index(name="Atenciones")
         tec_mes = tec_mes.sort_values("MES_ORDEN")
         fig_tec_mes = px.bar(tec_mes, x="MES", y="Atenciones", color="TECNICO", barmode="group",
@@ -1001,7 +1019,7 @@ def tab_productividad(df):
         st.plotly_chart(fig_tec_mes, use_container_width=True)
 
     with col2:
-        st.markdown(section_header("Distribuci\u00f3n de Tiempo por T\u00e9cnico", "Rango y dispersi\u00f3n del tiempo de atenci\u00f3n por t\u00e9cnico"), unsafe_allow_html=True)
+        st.markdown(section_header("Distribuci\u00f3n de Tiempo por T\u00e9cnico", "Rango y dispersi\u00f3n del tiempo de atenci\u00f3n por t\u00e9cnico", "minutos"), unsafe_allow_html=True)
         if len(df_tiempo[df_tiempo["TECNICO"] != ""]) > 0:
             fig_box = px.box(df_tiempo[df_tiempo["TECNICO"] != ""], x="TECNICO", y="MINUTOS_ATENCION",
                              color="TECNICO", color_discrete_sequence=COLOR_SEQUENCE,
@@ -1010,7 +1028,7 @@ def tab_productividad(df):
             st.plotly_chart(fig_box, use_container_width=True)
 
     # Radar chart
-    st.markdown(section_header("Perfil Comparativo de T\u00e9cnicos", "Comparaci\u00f3n multidimensional del desempe\u00f1o de cada t\u00e9cnico"), unsafe_allow_html=True)
+    st.markdown(section_header("Perfil Comparativo de T\u00e9cnicos", "Comparaci\u00f3n multidimensional del desempe\u00f1o de cada t\u00e9cnico", "escala relativa (0-100)"), unsafe_allow_html=True)
     radar_data = []
     for tec in sorted(tecnicos):
         df_tec = df[df["TECNICO"] == tec]
@@ -1078,7 +1096,7 @@ def tab_marcas_productos(df):
 
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown(section_header("Participaci\u00f3n por Marca", "Volumen y porcentaje de atenciones por cada marca"), unsafe_allow_html=True)
+        st.markdown(section_header("Participaci\u00f3n por Marca", "Volumen y porcentaje de atenciones por cada marca", "atenciones"), unsafe_allow_html=True)
         marca_data = df[df["MARCA"] != ""]["MARCA"].value_counts().reset_index()
         marca_data.columns = ["Marca", "Atenciones"]
         total_marcas = marca_data["Atenciones"].sum()
@@ -1091,7 +1109,7 @@ def tab_marcas_productos(df):
         st.plotly_chart(fig_marca_bar, use_container_width=True)
 
     with col2:
-        st.markdown(section_header("Top 15 Productos m\u00e1s Atendidos", "Modelos con mayor cantidad de solicitudes de soporte"), unsafe_allow_html=True)
+        st.markdown(section_header("Top 15 Productos m\u00e1s Atendidos", "Modelos con mayor cantidad de solicitudes de soporte", "atenciones"), unsafe_allow_html=True)
         modelo_data = df[df["MODELO"] != ""]["MODELO"].value_counts().head(15).reset_index()
         modelo_data.columns = ["Modelo", "Atenciones"]
         fig_top_mod = px.bar(modelo_data, x="Atenciones", y="Modelo", orientation="h",
@@ -1101,7 +1119,7 @@ def tab_marcas_productos(df):
         st.plotly_chart(fig_top_mod, use_container_width=True)
 
     # Heatmap marca vs motivo
-    st.markdown(section_header("Marca vs Motivo de Atenci\u00f3n", "Mapa de calor: intensidad de cada motivo por marca"), unsafe_allow_html=True)
+    st.markdown(section_header("Marca vs Motivo de Atenci\u00f3n", "Mapa de calor: intensidad de cada motivo por marca", "atenciones"), unsafe_allow_html=True)
     df_mm = df[(df["MARCA"] != "") & (df["MOTIVO"] != "")]
     if len(df_mm) > 0:
         top_marcas_list = df_mm["MARCA"].value_counts().head(10).index.tolist()
@@ -1115,7 +1133,7 @@ def tab_marcas_productos(df):
         st.plotly_chart(fig_heat2, use_container_width=True)
 
     # Sunburst
-    st.markdown(section_header("Jerarqu\u00eda: Marca / L\u00ednea / Modelo", "Exploraci\u00f3n interactiva de la estructura del portafolio de productos"), unsafe_allow_html=True)
+    st.markdown(section_header("Jerarqu\u00eda: Marca / L\u00ednea / Modelo", "Exploraci\u00f3n interactiva de la estructura del portafolio de productos", "atenciones"), unsafe_allow_html=True)
     df_sun = df[(df["MARCA"] != "") & (df["LINEA"] != "") & (df["MODELO"] != "")]
     if len(df_sun) > 0:
         sun_data = df_sun.groupby(["MARCA", "LINEA", "MODELO"]).size().reset_index(name="Atenciones")
@@ -1128,7 +1146,7 @@ def tab_marcas_productos(df):
 
     # Productos con mas garantias
     st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
-    st.markdown(section_header("Productos con Mayor Incidencia de Garant\u00eda", "Modelos con m\u00e1s casos de garant\u00eda registrados"), unsafe_allow_html=True)
+    st.markdown(section_header("Productos con Mayor Incidencia de Garant\u00eda", "Modelos con m\u00e1s casos de garant\u00eda registrados", "casos de garant\u00eda"), unsafe_allow_html=True)
     df_garant = df[(df["MOTIVO"] == "GARANTIA") & (df["MODELO"] != "")]
     if len(df_garant) > 0:
         garant_prod = df_garant.groupby(["MODELO", "MARCA"]).size().reset_index(name="Garantias")
@@ -1157,7 +1175,7 @@ def tab_clientes(df):
 
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown(section_header("Top 20 Clientes por Atenciones", "Clientes con mayor volumen de solicitudes de soporte"), unsafe_allow_html=True)
+        st.markdown(section_header("Top 20 Clientes por Atenciones", "Clientes con mayor volumen de solicitudes de soporte", "atenciones"), unsafe_allow_html=True)
         top_cli = df_clientes["CLIENTE"].value_counts().head(20).reset_index()
         top_cli.columns = ["Cliente", "Atenciones"]
         fig_cli = px.bar(top_cli, x="Atenciones", y="Cliente", orientation="h",
@@ -1167,7 +1185,7 @@ def tab_clientes(df):
         st.plotly_chart(fig_cli, use_container_width=True)
 
     with col2:
-        st.markdown(section_header("Atenciones por Canal", "Total de atenciones por cada canal comercial"), unsafe_allow_html=True)
+        st.markdown(section_header("Atenciones por Canal", "Total de atenciones por cada canal comercial", "atenciones"), unsafe_allow_html=True)
         canal_cli = df_clientes[df_clientes["CANAL"] != ""]["CANAL"].value_counts().reset_index()
         canal_cli.columns = ["Canal", "Atenciones"]
         fig_canal_cli = px.bar(canal_cli, x="Atenciones", y="Canal", orientation="h",
@@ -1176,13 +1194,13 @@ def tab_clientes(df):
         fig_canal_cli.update_layout(**PLOTLY_LAYOUT, showlegend=False, height=350, margin=dict(t=20, b=20, r=70), xaxis_title="", yaxis_title="")
         st.plotly_chart(fig_canal_cli, use_container_width=True)
 
-        st.markdown(section_header("Clientes \u00danicos por Canal", "Cantidad de clientes distintos atendidos en cada canal"), unsafe_allow_html=True)
+        st.markdown(section_header("Clientes \u00danicos por Canal", "Cantidad de clientes distintos atendidos en cada canal", "clientes"), unsafe_allow_html=True)
         uniq_canal = df_clientes[df_clientes["CANAL"] != ""].groupby("CANAL")["CLIENTE"].nunique().reset_index()
         uniq_canal.columns = ["Canal", "Clientes \u00danicos"]
         st.dataframe(uniq_canal, use_container_width=True, hide_index=True)
 
     # Scatter
-    st.markdown(section_header("Segmentaci\u00f3n: Atenciones vs Tiempo Promedio", "Relaci\u00f3n entre frecuencia y complejidad de atenci\u00f3n por cliente"), unsafe_allow_html=True)
+    st.markdown(section_header("Segmentaci\u00f3n: Atenciones vs Tiempo Promedio", "Relaci\u00f3n entre frecuencia y complejidad de atenci\u00f3n por cliente", "atenciones vs minutos"), unsafe_allow_html=True)
     df_cli_tiempo = df_clientes[df_clientes["MINUTOS_ATENCION"] > 0]
     if len(df_cli_tiempo) > 0:
         cli_agg = df_cli_tiempo.groupby("CLIENTE").agg(
@@ -1218,7 +1236,7 @@ def tab_clientes(df):
 
     # Clientes con mayor tasa de garantia
     st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
-    st.markdown(section_header("Clientes con Mayor Tasa de Garant\u00eda", "Clientes con mayor proporci\u00f3n de atenciones por garant\u00eda"), unsafe_allow_html=True)
+    st.markdown(section_header("Clientes con Mayor Tasa de Garant\u00eda", "Clientes con mayor proporci\u00f3n de atenciones por garant\u00eda", "porcentaje (%)"), unsafe_allow_html=True)
     if len(df_clientes) > 0:
         cli_garant = df_clientes.groupby("CLIENTE").apply(
             lambda x: pd.Series({
@@ -1251,7 +1269,7 @@ def tab_indicadores_kpi(df):
     total = len(df)
     df_tiempo = df[df["MINUTOS_ATENCION"] > 0]
 
-    st.markdown(section_header("Cumplimiento de SLA", "Porcentaje de atenciones resueltas dentro de los umbrales de tiempo"), unsafe_allow_html=True)
+    st.markdown(section_header("Cumplimiento de SLA", "Porcentaje de atenciones resueltas dentro de los umbrales de tiempo", "porcentaje (%)"), unsafe_allow_html=True)
 
     pct_30 = pct_60 = pct_sobre_60 = 0
     if len(df_tiempo) > 0:
@@ -1308,7 +1326,7 @@ def tab_indicadores_kpi(df):
     st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
 
     # Capacidad diaria
-    st.markdown(section_header("Utilizaci\u00f3n de Capacidad Diaria", "Volumen diario de atenciones comparado con el promedio del periodo"), unsafe_allow_html=True)
+    st.markdown(section_header("Utilizaci\u00f3n de Capacidad Diaria", "Volumen diario de atenciones comparado con el promedio del periodo", "atenciones"), unsafe_allow_html=True)
     daily_data = df.groupby("FECHA").size().reset_index(name="Atenciones")
     daily_data = daily_data.sort_values("FECHA")
     if len(daily_data) > 0:
@@ -1319,7 +1337,7 @@ def tab_indicadores_kpi(df):
         st.plotly_chart(fig_daily, use_container_width=True)
 
     # Crecimiento mensual
-    st.markdown(section_header("Crecimiento Mensual", "Variación porcentual del volumen de atenciones entre meses"), unsafe_allow_html=True)
+    st.markdown(section_header("Crecimiento Mensual", "Variaci\u00f3n porcentual del volumen de atenciones entre meses", "atenciones y variaci\u00f3n (%)"), unsafe_allow_html=True)
     mes_growth = df.groupby(["MES", "MES_ORDEN"]).size().reset_index(name="Atenciones")
     mes_growth = mes_growth.sort_values("MES_ORDEN")
     if len(mes_growth) > 1:
@@ -1344,7 +1362,7 @@ def tab_indicadores_kpi(df):
     st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
 
     # Indice de equidad
-    st.markdown(section_header("\u00cdndice de Equidad en Distribuci\u00f3n de Carga", "Balance en la distribuci\u00f3n de carga de trabajo entre t\u00e9cnicos (100% = equitativa)"), unsafe_allow_html=True)
+    st.markdown(section_header("\u00cdndice de Equidad en Distribuci\u00f3n de Carga", "Balance en la distribuci\u00f3n de carga de trabajo entre t\u00e9cnicos (100% = equitativa)", "porcentaje (%)"), unsafe_allow_html=True)
     tecnicos_load = df[df["TECNICO"] != ""].groupby("TECNICO").size()
     equidad = 0
     if len(tecnicos_load) > 1:
